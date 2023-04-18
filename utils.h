@@ -17,6 +17,7 @@
 #include "ip.h"
 #include "ethhdr.h"
 #include "arphdr.h"
+#include "ipv4hdr.h"
 
 using namespace std;
 

@@ -25,4 +25,5 @@ void ARPRelay(
     Ip& attacker_ip,
     Mac& sender_mac,
     Ip& sender_ip,
-    Ip& target_ip);
+    Ip& target_ip,
+    Mac& target_mac);
