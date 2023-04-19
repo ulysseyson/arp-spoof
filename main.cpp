@@ -63,10 +63,10 @@ int main(int argc, char* argv[]) {
 		}
 		if (arp_detect_pid == 0) {
 			ARPInfectDetectPacket(handle, attacker_mac, attacker_ip,
-								  sender_mac, sender_ip, target_ip);
+								  sender_mac, sender_ip, target_ip, target_mac);
 		}
 		else{
-			sleep(3);
+			sleep(1);
 		}
 		if ((arp_frequent_pid == fork()) < 0) {
 			printf("arp frequent fork failed\n");
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 							  sender_mac, sender_ip, target_ip);
 		}
 		else{
-			sleep(3);
+			sleep(1);
 		}
 		// send fake arp reply thread open!
 		if ((arp_relay_pid == fork()) < 0) {
@@ -89,9 +89,8 @@ int main(int argc, char* argv[]) {
 							  sender_mac, sender_ip, target_ip, target_mac);
 		}
 		else{
-			sleep(3);
+			sleep(1);
 		}
-		// replace target ip(gateway ip) matches to attacker mac
 
 	}
 

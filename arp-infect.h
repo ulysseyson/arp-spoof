@@ -7,7 +7,8 @@ void ARPInfectDetectPacket(
     Ip& attacker_ip,
     Mac& sender_mac,
     Ip& sender_ip,
-    Ip& target_ip);
+    Ip& target_ip,
+    Mac& target_mac);
 
 // Do ARP table infecting for every 5min
 void ARPInfectFrequent(
