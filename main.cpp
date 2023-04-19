@@ -43,13 +43,17 @@ int main(int argc, char* argv[]) {
 		// get sender's MAC address
 		Mac sender_mac = Mac("00:00:00:00:00:00");
 		cout << "get sender's info\n";
-		getSenderInfo(handle, sender_mac, sender_ip, attacker_mac, attacker_ip);
+		while (sender_mac == Mac("00:00:00:00:00:00")) {
+			getSenderInfo(handle, sender_mac, sender_ip, attacker_mac, attacker_ip);
+		}
 		cout << "done\n" << "sender's mac address is " << string(sender_mac) << "\n";
 
 		// get target's MAC address
 		Mac target_mac = Mac("00:00:00:00:00:00");
 		cout << "get target's info\n";
-		getSenderInfo(handle, target_mac, target_ip, attacker_mac, attacker_ip);
+		while (target_mac == Mac("00:00:00:00:00:00")) {
+			getSenderInfo(handle, target_mac, target_ip, attacker_mac, attacker_ip);
+		}
 		cout << "done\n" << "target's mac address is " << string(target_mac) << "\n";
 		
 		// arp table infect thread open!
